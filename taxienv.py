@@ -20,6 +20,8 @@ for episode in range(total_episodes):
   while t < max_steps:
     action = qlearn.choose_action(obs)
     obs2, reward, done, info = env.step(action)
+    if(reward < 0):
+      print(reward)
     reward_per_episode += reward
     qlearn.learn(obs, obs2, reward, action)
     obs = obs2
