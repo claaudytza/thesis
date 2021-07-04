@@ -6,18 +6,20 @@ total_episodes = 20000
 max_steps = 100
 
 env = gym.make('LunarLander-v2')
+print(env.observation_space)
+print(env.action_space)
 # env.seed(0)
-for i_episode in range(20):
-    observation = env.reset()
-    for t in range(100):
-        env.render()
-        print(observation)
-        action = env.action_space.sample()
-        observation, reward, done, info = env.step(action)
-        if done:
-            print("Episode finished after {} timesteps".format(t+1))
-            break
-env.close()
+# for i_episode in range(20):
+#     observation = env.reset()
+#     for t in range(100):
+#         # env.render()
+#         print(observation)
+#         action = env.action_space.sample()
+#         observation, reward, done, info = env.step(action)
+#         if done:
+#             print("Episode finished after {} timesteps".format(t+1))
+#             break
+# env.close()
 # qlearn = Agent(env, 0.99, 0.01, 0.9, 0.1, 0.96)
 
 # total_success = 0
