@@ -4,12 +4,12 @@ from qlearnagent import Agent
 import csv
 
 total_episodes = 50000
-max_steps = 300
+max_steps = 1000
 
-env = gym.make('FrozenLake-v0')
-env.seed(1)
+env = gym.make('gym_waterworld:waterworld-v0')
 
-# print(env.render())
+print(env.render())
+
 # start with smaller discount factor
 qlearn = Agent(env, 0.99, 0.01, 0.9, 0.1, 0.1)
 
@@ -18,7 +18,7 @@ total_failures = 0
 
 for episode in range(total_episodes):
   obs = env.reset()
-  env.seed(1)
+
   t = 0
   if episode % 100 == 99:
     qlearn.epsilon *= qlearn.decay_rate
@@ -37,13 +37,12 @@ for episode in range(total_episodes):
 
     qlearn.learn(obs, obs2, reward, action)
     obs = obs2
+
     t += 1
     if done:
       if reward > 0.0:
             total_success = total_success + 1
       else:
-            qlearn.learnUnsafe(obs2, action, -10, 0)
-            qlearn.learnFailureCountWithAvg(obs, obs2, action)
             total_failures = total_failures + 1
       break
 
