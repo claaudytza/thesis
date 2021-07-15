@@ -10,7 +10,6 @@ class Agent:
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
         self.Q = np.zeros((self.env.observation_space.n, self.env.action_space.n))
-        self.unsafeProb = np.zeros((self.env.observation_space.n, self.env.action_space.n))
         self.failureCount = np.zeros((self.env.observation_space.n, self.env.action_space.n))
 
     def choose_action(self, observation):
@@ -26,16 +25,12 @@ class Agent:
         target = reward + self.discount_factor * np.max(self.Q[observation2, :])
         self.Q[observation, action] = self.Q[observation, action] + self.learning_rate * (target - prediction)
 
-    def learnUnsafe(self, observation, action, reward, threeshold):
-        if(reward < threeshold):
-            self.unsafeProb[observation, action] = 1
-
-    def learnFailureCountWithMax(self, observation, observation2, action):
+    def learnFailureCountWithMax(self, observation, observation2, action, unsafe):
         prediction = self.failureCount[observation, action]
-        target = self.unsafeProb[observation2, action] + 0.99 * self.failureCount[observation2, np.argmax(self.Q[observation2, :])]
+        target = unsafe + 0.99 * self.failureCount[observation2, np.argmax(self.Q[observation2, :])]
         self.failureCount[observation, action] = prediction + 0.1 * (target - prediction)
 
-    def learnFailureCountWithAvg(self, observation, observation2, action):
+    def learnFailureCountWithAvg(self, observation, observation2, action, unsafe):
         prediction = self.failureCount[observation, action]
-        target = self.unsafeProb[observation2, action] + 0.99 * np.average(self.failureCount[observation2, :])
+        target = unsafe + 0.99 * np.average(self.failureCount[observation2, :])
         self.failureCount[observation, action] = prediction + 0.1 * (target - prediction)
