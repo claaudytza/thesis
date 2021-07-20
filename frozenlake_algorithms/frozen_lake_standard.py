@@ -55,7 +55,4 @@ with open('frozenlake1.csv', 'w', newline='', encoding='utf-8') as f:
 print("total success dynamic discount factor", total_success)
 print("total failures discount factor", total_failures)
 
-print(qlearn.failureCount)
-print(qlearn.Q)
-
 env.close()
