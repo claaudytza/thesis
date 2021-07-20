@@ -7,8 +7,6 @@ total_episodes = 50000
 max_steps = 300
 
 env = gym.make('gym_waterworld:waterworld-v0')
-
-# start with smaller discount factor
 qlearn = Agent(env, 0.99, 0.01, 0.9, 0.1, 0.96)
 
 total_success = 0
@@ -72,8 +70,6 @@ with open('waterworldAvg1.csv', 'w', newline='', encoding='utf-8') as f:
         total_failures = total_failures + 1
       else:
         obs = obs2
-
-
 
 print("total success dynamic discount factor", total_success)
 print("total failures discount factor", total_failures)
