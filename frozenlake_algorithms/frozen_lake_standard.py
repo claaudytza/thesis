@@ -19,7 +19,6 @@ with open('frozenlake1.csv', 'w', newline='', encoding='utf-8') as f:
   fieldnames = ['number_of_steps', 'episode_number', 'won', 'state', 'Q_value_state']
 
   writer = csv.DictWriter(f, fieldnames=fieldnames)
-
   writer.writeheader()
 
   for episode in range(total_episodes):
@@ -49,8 +48,6 @@ with open('frozenlake1.csv', 'w', newline='', encoding='utf-8') as f:
         break
       else:
         obs = obs2
-
-
 
 print("total success dynamic discount factor", total_success)
 print("total failures discount factor", total_failures)
