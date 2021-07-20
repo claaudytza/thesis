@@ -9,14 +9,14 @@ max_steps = 300
 
 env = gym.make('FrozenLake-v0')
 env.seed(1)
-print(env.render())
+
 qlearn = Agent(env, 0.99, 0.01, 0.9, 0.1, 0.96)
 
 total_success = 0
 total_failures = 0
 
-with open('frozenlake5.csv', 'w', newline='', encoding='utf-8') as f:
-  fieldnames = ['number_of_steps', 'episode_number', 'won', 'algorithm', 'state', 'Q_value_state']
+with open('frozenlake1.csv', 'w', newline='', encoding='utf-8') as f:
+  fieldnames = ['number_of_steps', 'episode_number', 'won', 'state', 'Q_value_state']
 
   writer = csv.DictWriter(f, fieldnames=fieldnames)
 
@@ -32,41 +32,19 @@ with open('frozenlake5.csv', 'w', newline='', encoding='utf-8') as f:
     while t < max_steps:
       action = qlearn.choose_action(obs)
       obs2, reward, done, info = env.step(action)
-      # print('observation', obs2)
-      # print('action', action)
-      # unsafe = 0
-      # qlearn.learnFailureCountWithMax(obs, obs2, action, unsafe)
-
-      # if(qlearn.failureCount[obs, action] > numpy.average(qlearn.failureCount[:,:])):
-      #   qlearn.discount_factor = 0.96
-      # else:
-      #   qlearn.discount_factor = 0.4
-
       qlearn.learn(obs, obs2, reward, action)
       t += 1
-      # SFFF
-      # FHFH
-      # FFFH
-      # HFFG
-
+      
       if done:
         if reward > 0.0:
-              writer.writerow({'number_of_steps': t, 'episode_number': episode, 'won': 1, 'algorithm': 'standard'})
+              writer.writerow({'number_of_steps': t, 'episode_number': episode, 'won': 1})
               total_success = total_success + 1
         else:
               if(obs2 == 5 and action == 2):
-                writer.writerow({'number_of_steps': t, 'episode_number': episode, 'won': 0, 'algorithm': 'standard',
+                writer.writerow({'number_of_steps': t, 'episode_number': episode, 'won': 0
                   'state': obs2, 'Q_value_state': qlearn.Q[obs, action]})
               else:
-                writer.writerow({'number_of_steps': t, 'episode_number': episode, 'won': 0, 'algorithm': 'standard'})
-              # unsafe = 1
-              # qlearn.learnFailureCountWithMax(obs, obs2, action, unsafe)
-              # if(qlearn.failureCount[obs, action] > numpy.average(qlearn.failureCount[:,:])):
-              #   qlearn.discount_factor = 0.96
-              # else:
-              #   qlearn.discount_factor = 0.4
-
-              # qlearn.learn(obs, obs2, reward, action)
+                writer.writerow({'number_of_steps': t, 'episode_number': episode, 'won': 0})
               total_failures = total_failures + 1
         break
       else:
