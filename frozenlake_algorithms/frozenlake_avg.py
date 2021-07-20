@@ -18,7 +18,6 @@ with open('frozenlakeAvg1.csv', 'w', newline='', encoding='utf-8') as f:
   fieldnames = ['number_of_steps', 'episode_number', 'won', 'state', 'Q_value_state', 'failure_count', 'discount_factor']
 
   writer = csv.DictWriter(f, fieldnames=fieldnames)
-
   writer.writeheader()
 
   for episode in range(total_episodes):
