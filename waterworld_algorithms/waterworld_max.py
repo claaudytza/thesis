@@ -15,9 +15,9 @@ qlearn = Agent(env, 0.99, 0.01, 0.9, 0.1, 0.96)
 
 total_success = 0
 total_failures = 0
-with open('waterworld5.csv', 'w', newline='', encoding='utf-8') as f:
+with open('waterworldMax1.csv', 'w', newline='', encoding='utf-8') as f:
 
-  fieldnames = ['number_of_steps', 'episode_number', 'won', 'algorithm', 'state', 'Q_value_state']
+  fieldnames = ['number_of_steps', 'episode_number', 'won', 'state', 'Q_value_state', 'failure_count', 'discount_factor']
 
   writer = csv.DictWriter(f, fieldnames=fieldnames)
 
@@ -34,16 +34,16 @@ with open('waterworld5.csv', 'w', newline='', encoding='utf-8') as f:
       action = qlearn.choose_action(obs)
       obs2, reward, done, info = env.step(action)
 
-      # unsafe = 0
-      # qlearn.learnFailureCountWithMax(obs, obs2, action, unsafe)
+      unsafe = 0
+      qlearn.learnFailureCountWithMax(obs, obs2, action, unsafe)
 
-      # if(qlearn.failureCount[obs, action] > numpy.average(qlearn.failureCount[:,:])):
-      #   qlearn.discount_factor = 0.96
-      # else:
-      #   qlearn.discount_factor = 0.4
+      if(qlearn.failureCount[obs, action] > numpy.average(qlearn.failureCount[:,:])):
+        qlearn.discount_factor = 0.96
+      else:
+        qlearn.discount_factor = 0.4
 
       qlearn.learn(obs, obs2, reward, action)
-      #(from state 6 and action 2 to unsafe state: 7) - 6 is red
+
       t += 1
       if done:
         if reward > 0.0:
@@ -52,19 +52,20 @@ with open('waterworld5.csv', 'w', newline='', encoding='utf-8') as f:
         else:
               if(obs2 == 7 and action == 2):
                 writer.writerow({'number_of_steps': t, 'episode_number': episode, 'won': 0, 'algorithm': 'standard',
-                  'state': obs2, 'Q_value_state': qlearn.Q[obs, action]})
+                  'state': obs2, 'Q_value_state': qlearn.Q[obs, action], 'failure_count' : qlearn.failureCount[obs, action], 
+                                 'discount_factor': qlearn.discount_factor})
               else:
                 writer.writerow({'number_of_steps': t, 'episode_number': episode, 'won': 0, 'algorithm': 'standard'})
 
-              # unsafe = 1
-              # qlearn.learnFailureCountWithMax(obs, obs2, action, unsafe)
+              unsafe = 1
+              qlearn.learnFailureCountWithMax(obs, obs2, action, unsafe)
 
-              # if(qlearn.failureCount[obs, action] > numpy.average(qlearn.failureCount[:,:])):
-              #   qlearn.discount_factor = 0.96
-              # else:
-              #   qlearn.discount_factor = 0.4
+              if(qlearn.failureCount[obs, action] > numpy.average(qlearn.failureCount[:,:])):
+                qlearn.discount_factor = 0.96
+              else:
+                qlearn.discount_factor = 0.4
 
-              # qlearn.learn(obs, obs2, reward, action)
+              qlearn.learn(obs, obs2, reward, action)
 
               total_failures = total_failures + 1
         break
@@ -78,8 +79,5 @@ with open('waterworld5.csv', 'w', newline='', encoding='utf-8') as f:
 
 print("total success dynamic discount factor", total_success)
 print("total failures discount factor", total_failures)
-
-print(qlearn.failureCount)
-print(qlearn.Q)
 
 env.close()
